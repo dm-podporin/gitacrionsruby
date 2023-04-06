@@ -23,10 +23,15 @@ jobs:
     - name: Upload test results
       uses: actions/upload-artifact@v2
       with:
-        name: Test Results
         path: './spec/reports/'
-      if: ${{ always() }}
-
-    - name: Set exit status
-      run: exit $STATUS
+        name: test-ruby
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get build project
+        uses: actions/download-artifact@v3
+        with:
+          name: test-ruby
+          path: spec/reports
 
