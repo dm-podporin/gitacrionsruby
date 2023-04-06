@@ -15,5 +15,5 @@ jobs:
       run: |
         sudo gem install rspec
     - name: Run RSpec
-      run: bundle exec rspec
+      run: rspec
 
