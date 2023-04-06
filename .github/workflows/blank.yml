@@ -15,18 +15,20 @@ jobs:
     - name: Install dependencies
       run: |
         sudo gem install rspec
-    - name: Run tests
-      run: |
-        rspec
-        STATUS=$?
-
-    - name: Upload test results
+    - name: Run test
+      run: rspec --format documentation --out results.txt
+      
+    - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
-        name: Test Results
-        path: './spec/reports/'
-      if: ${{ always() }}
-
-    - name: Set exit status
-      run: exit $STATUS
+        path: results.txt
+        name: test-ruby
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get build project
+        uses: actions/download-artifact@v3
+        with:
+          name: test-ruby
 
