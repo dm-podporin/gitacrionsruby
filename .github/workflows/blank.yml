@@ -2,10 +2,11 @@ name: Ruby CI
 
 on: [push, pull_request]
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: Get code
+      uses: actions/checkout@v3
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
@@ -14,6 +15,19 @@ jobs:
     - name: Install dependencies
       run: |
         sudo gem install rspec
-    - name: Run RSpec
+    - name: Run test
       run: rspec
-
+      
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        path: './spec/reports/'
+        name: test-ruby
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get build project
+        uses: actions/download-artifact@v3
+        with:
+          name: test-ruby
